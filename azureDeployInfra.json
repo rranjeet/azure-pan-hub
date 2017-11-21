@@ -226,7 +226,7 @@
 	},
 	
 	"variables": {
-		"baseUrl"              : "http://raw.githubusercontent.com/fullscale180/PAN/master",
+		"baseUrl"              : "http://raw.githubusercontent.com/rranjeet/azure-pan-hub/master",
 		"deployStorageURL"     : "[concat(variables('baseUrl'),'/deployStorage.json')]",
 		"deployNsgURL"         : "[concat(variables('baseUrl'),'/deployNsg.json')]",
 		"deployVnetURL"        : "[concat(variables('baseUrl'),'/deployVnet.json')]",
