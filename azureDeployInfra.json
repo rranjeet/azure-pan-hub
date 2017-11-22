@@ -7,17 +7,16 @@
 			"metadata": {
 				"description": "Name of the storage account created to store the VM's disks.  Storage account name must be globally unique."
 			},
-			"defaultValue": "ENTER A GLOBALLY UNIQUE NAME HERE"
+			"defaultValue": "Enter a globally unique name"
 		},
 		"mgmtPublicIPDns": {
 			"type": "string",
 			"metadata": {
 				"description": "DNS Name prefix of public IP resource for Management interface of VM-Series firewall.  Name must be globally unique."
 			},
-			"defaultValue": "ENTER A GLOBALLY UNIQUE NAME HERE"
+			"defaultValue": "Enter a globally unique name"
 		},
 
-		// NSG Settings
 		"networkSecurityGroupName": {
 			"type": "string",
 			"defaultValue": "mgmt-nsg",
@@ -33,7 +32,6 @@
 			"defaultValue": "0.0.0.0/0"
 		},
 
-		// Availability Set Settings
 		"avsetName": {
 			"type": "string",
 			"metadata": {
@@ -42,7 +40,6 @@
 			"defaultValue": "outbound-avset"
 		},
 
-		// Storage Settings
 		"storageType": {
 			"type": "string",
 			"allowedValues": [
@@ -57,7 +54,6 @@
 			"defaultValue": "Standard_LRS"
 		},
 
-		// VNet settings
 		"virtualNetworkName": {
 			"type": "string",
 			"defaultValue": "vnet",
@@ -129,7 +125,6 @@
 			}
 		},
 
-		// Pip setttings
 		"mgmtPublicIPName": {
 			"type": "string",
 			"metadata": {
@@ -138,7 +133,6 @@
 			"defaultValue": "mgmt-pip"
 		},
 		
-		// Load Balancers setttings
 		"loadBalancerName": {
 			"type": "string",
 			"metadata": {
@@ -146,16 +140,6 @@
 			},
 			"defaultValue": "outbound-lb"
 		},
-		"routeTableName": {
-			"type": "string",
-			"defaultValue": "routes-rt",
-			"metadata": {
-				"description": "This is the name of the route table"
-			}
-		},
-
-
-		// VM settings
 		"firewallModel": {
 			"type": "string",
 			"defaultValue": "byol",
@@ -173,7 +157,7 @@
 			"metadata": {
 				"description": "Name prefix of VM-Series VM in the Azure portal"
 			},
-			"defaultValue": "series-vm"
+			"defaultValue": "outbound-vm-series"
 		},
 		"firewallVmSize": {
 			"type": "string",
@@ -204,14 +188,14 @@
 		},
 		"username": {
 			"type": "string",
-			"defaultValue": "AdminUser",
+			"defaultValue": "pandemo",
 			"metadata": {
 				"description": "Username of the administrator account of VM instances"
 			}
 		},
 		"password": {
 			"type": "securestring",
-			"defaultValue": "P@ssword1234",
+			"defaultValue": "Dem0pa$$w0rd",
 			"metadata": {
 				"description": "Password for the administrator account of all VM instances. Must be specified if Authentication Type is 'password'."
 			}
@@ -240,7 +224,6 @@
 
 	"resources": [
 
-		// Deploy Storage
 		{	
 			"name": "deployStorage",
 			"type": "Microsoft.Resources/deployments",
@@ -265,7 +248,6 @@
 			}
 		},
 
-		// Deploy NSG
 		{	
 			"name": "deployNsg",
 			"type": "Microsoft.Resources/deployments",
@@ -293,7 +275,6 @@
 			}
 		},
 
-		// Deploy VNet
 		{	
 			"name": "deployVnet",
 			"type": "Microsoft.Resources/deployments",
@@ -345,7 +326,6 @@
 			}
 		},
 
-		// Deploy outbound load balancer
 		{	
 			"name": "deployOutboundLoadBalancer",
 			"type": "Microsoft.Resources/deployments",
@@ -379,7 +359,6 @@
 			}
 		},
 
-		// Deploy outbound Firewall
 		{	
 			"name": "deployOutboundFirewall",
 			"type": "Microsoft.Resources/deployments",
@@ -449,34 +428,10 @@
 					},
 					"sshKey": {
 						"value": "[parameters('sshPublicKey')]"
-					},
+					}
 				}
 			}
-		},
-
-		// Setup RouteTable
-		{
-			"apiVersion": "2015-06-15",
-			"type": "Microsoft.Network/routeTables",
-			"name": "[parameters('routeTableName')]",
-			"dependsOn": [
-				"Microsoft.Resources/deployments/deployOutboundLoadBalancer"
-			],
-			"location": "[variables('location')]",
-			"properties": {
-				"routes": [
-					{
-						"name": "Default",
-						"properties": {
-							"addressPrefix": "0.0.0.0/0",
-							"nextHopType": "VirtualAppliance", 
-							"nextHopIpAddress": "[reference('deployOutboundLoadBalancer').outputs.LoadBalancerFrontEndIp.value]"
-						}
-					}
-				]
-			}
 		}
-
 	],
 	"outputs": {}
 }
