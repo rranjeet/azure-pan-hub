@@ -140,6 +140,13 @@
 			},
 			"defaultValue": "outbound-lb"
 		},
+		"loadBalancerIP": {
+			"type": "string",
+			"metadata": {
+				"description": "IP Address for the outbound load balancer resource in the Trust network."
+			},
+			"defaultValue": "10.0.2.4"
+		},
 		"firewallModel": {
 			"type": "string",
 			"defaultValue": "byol",
@@ -223,7 +230,6 @@
 	},
 
 	"resources": [
-
 		{	
 			"name": "deployStorage",
 			"type": "Microsoft.Resources/deployments",
@@ -247,7 +253,6 @@
 				}
 			}
 		},
-
 		{	
 			"name": "deployNsg",
 			"type": "Microsoft.Resources/deployments",
@@ -274,7 +279,6 @@
 				}
 			}
 		},
-
 		{	
 			"name": "deployVnet",
 			"type": "Microsoft.Resources/deployments",
@@ -325,7 +329,6 @@
 				}
 			}
 		},
-
 		{	
 			"name": "deployOutboundLoadBalancer",
 			"type": "Microsoft.Resources/deployments",
@@ -354,11 +357,13 @@
 					},
 					"loadBalancerName": {
 						"value": "[parameters('loadBalancerName')]"
+					},
+                    "loadBalancerIP": {
+						"value": "[parameters('loadBalancerIP')]"
 					}
 				}
 			}
 		},
-
 		{	
 			"name": "deployOutboundFirewall",
 			"type": "Microsoft.Resources/deployments",

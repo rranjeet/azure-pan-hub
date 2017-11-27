@@ -2,7 +2,6 @@
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
-
 		"location": {
 			"type": "string",
 			"metadata": {
@@ -29,12 +28,16 @@
 				"description": "Name of the subnet"
 			}
 		},
-		
-		// load balancer parameters
 		"loadBalancerName": {
 			"type": "string",
 			"metadata": {
 				"description": "Name of the inbound load balancer"
+			}
+		},
+		"loadBalancerIP": {
+			"type": "string",
+			"metadata": {
+				"description": "IP Address of the inbound load balancer in the Trust network"
 			}
 		}
 	},
@@ -45,13 +48,15 @@
 	},
 
 	"resources": [
-
-		// Setup load balancer
 		{ 
-			"apiVersion": "2015-05-01-preview",
+			"apiVersion": "2017-08-01",
 			"type": "Microsoft.Network/loadBalancers",
 			"name": "[parameters('loadBalancerName')]",
 			"location": "[parameters('location')]",
+            "sku":
+            {
+                "name": "Standard"
+            },
 			"properties": {
 				"frontendIPConfigurations": [
 					{
@@ -60,7 +65,8 @@
 							"subnet": {
 								"id": "[concat(variables('vnetId'),'/subnets/',parameters ('subnetName'))]"
 							},
-							"privateIPAllocationMethod": "Dynamic" 
+							"privateIPAllocationMethod": "Static",
+							"privateIPAddress": "[parameters('loadBalancerIP')]" 
 						}
 					}
 				],
@@ -81,11 +87,12 @@
 							"probe": {
 								"id": "[concat(variables('lbId'), '/probes/lbprobe')]"
 							},
-							"protocol": "Tcp",
-							"frontendPort": 80,
-							"backendPort": 80,
-							"enableFloatingIP": true,
-							"idleTimeoutInMinutes": 15
+							"protocol": "All",
+							"frontendPort": 0,
+							"backendPort": 0,
+							"enableFloatingIP": false,
+							"idleTimeoutInMinutes": 4,
+							"loadDistribution": "SourceIPProtocol"
 						},
 						"Name": "lbrule"
 					}
@@ -110,9 +117,6 @@
 		"LoadBalancerFrontEndIp": {
 			"value": "[reference(concat('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))).frontendIPConfigurations[0].properties.privateIPAddress ]",
 			"type" : "string"
-		},
+		}
 	}
 }
-
-
-

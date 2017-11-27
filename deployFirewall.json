@@ -208,9 +208,12 @@
 		
 		// Setup Mgmt PublicIPs[x]
 		{ 
-			"apiVersion": "2015-06-15",
+			"apiVersion": "2017-08-01",
 			"type": "Microsoft.Network/publicIPAddresses",
 			"name": "[concat(parameters('mgmtPublicIPName'), copyindex())]",
+			"sku": {
+				"name": "Standard"
+			},
 			"location": "[parameters('location')]",
 			"copy": {
 				"name": "pipLoop",
@@ -382,6 +385,3 @@
 		}
 	]
 }
-
-
-

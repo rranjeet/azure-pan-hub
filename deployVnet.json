@@ -113,7 +113,7 @@
 				"properties": {
 					"addressPrefix": "[parameters('backendSubnetPrefix')]"
 				}
-			},
+			}
 		]
 	},
 	"resources": [
