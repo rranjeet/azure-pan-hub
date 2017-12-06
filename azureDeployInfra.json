@@ -32,14 +32,6 @@
 			"defaultValue": "0.0.0.0/0"
 		},
 
-		"avsetName": {
-			"type": "string",
-			"metadata": {
-				"description": "Name of the availability set for outbound firewall"
-			},
-			"defaultValue": "outbound-avset"
-		},
-
 		"storageType": {
 			"type": "string",
 			"allowedValues": [
@@ -385,9 +377,6 @@
 					},
 					"location": {
 						"value": "[variables('location')]"
-					},
-					"avSetName": {
-						"value": "[parameters('avsetName')]"
 					},
 					"storageName": {
 						"value": "[variables('storageName')]"

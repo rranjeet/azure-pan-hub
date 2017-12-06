@@ -9,13 +9,6 @@
 				"description": "Name prefix of the new storage account created to store the VM's disks"
 			}
 		},
-		"avSetName": {
-			"type": "string",
-			"defaultValue": "firewall-avset",
-			"metadata": {
-				"description": "Availability Set name"
-			}
-		},
 		"location": {
 			"type": "string",
 			"metadata": {
@@ -197,15 +190,6 @@
 	},
 
 	"resources": [
-
-		// availabilitySets
-		{ 
-			"apiVersion": "2015-05-01-preview",
-			"type": "Microsoft.Compute/availabilitySets",
-			"name": "[parameters('avSetName')]",
-			"location": "[parameters('location')]"
-		},
-		
 		// Setup Mgmt PublicIPs[x]
 		{ 
 			"apiVersion": "2017-08-01",
@@ -346,7 +330,6 @@
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2015-01-01",
 			"dependsOn": [
-				"[concat('Microsoft.Compute/availabilitySets/', parameters('avSetName'))]",
 				"[concat('Microsoft.Network/publicIPAddresses/', parameters('mgmtPublicIPName'), copyindex())]",
 				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic0')]",
 				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic1')]",
@@ -368,9 +351,6 @@
 					},
 					"virtualMachineName": {
 						"value": "[concat(parameters('virtualMachineName'), copyindex())]"
-					},
-					"avSetName": {
-						"value": "[parameters('avSetName')]"
 					},
 					"imageSku": {
 						"value": "[parameters('imageSku')]"
