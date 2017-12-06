@@ -41,13 +41,6 @@
 				"description": "Subnet for Trust"
 			}
 		},
-		"backendSubnetName": {
-			"type": "string",
-			"defaultValue": "backendSubnet",
-			"metadata": {
-				"description": "Subnet for backend WWW"
-			}
-		},
 		"mgmtSubnetPrefix": {
 			"type": "string",
 			"defaultValue": "192.168.0.0/24",
@@ -68,13 +61,6 @@
 			"metadata": {
 				"description": "Trust subnet CIDR"
 			}
-		},
-		"backendSubnetPrefix": {
-			"type": "string",
-			"defaultValue": "192.168.4.0/24",
-			"metadata": {
-				"description": "backend WWW CIDR"
-			}
 		}
 	},
 	"variables": {
@@ -85,7 +71,6 @@
 		"mgmtSubnetRef"    : "[concat(variables('vnetID'),'/subnets/',parameters('mgmtSubnetName'))]",
 		"untrustSubnetRef" : "[concat(variables('vnetID'),'/subnets/',parameters('untrustSubnetName'))]",
 		"trustSubnetRef"   : "[concat(variables('vnetID'),'/subnets/',parameters('trustSubnetName'))]",
-		"backendSubnetRef" : "[concat(variables('vnetID'),'/subnets/',parameters('backendSubnetName'))]",
 		"subnets": [
 			{
 				"name": "[parameters('mgmtSubnetName')]",
@@ -106,12 +91,6 @@
 				"name": "[parameters('trustSubnetName')]",
 				"properties": {
 					"addressPrefix": "[parameters('trustSubnetPrefix')]"
-				}
-			},
-			{
-				"name": "[parameters('backendSubnetName')]",
-				"properties": {
-					"addressPrefix": "[parameters('backendSubnetPrefix')]"
 				}
 			}
 		]

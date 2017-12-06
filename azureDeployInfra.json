@@ -102,21 +102,6 @@
 				"description": "CIDR for Trusted Network"
 			}
 		},
-		"backendSubnetName": {
-			"type": "string",
-			"defaultValue": "Backend",
-			"metadata": {
-				"description": "Subnet for Backend WWW Network"
-			}
-		},
-		"backendSubnetPrefix": {
-			"type": "string",
-			"defaultValue": "10.0.3.0/24",
-			"metadata": {
-				"description": "CIDR for Backend WWW Network"
-			}
-		},
-
 		"mgmtPublicIPName": {
 			"type": "string",
 			"metadata": {
@@ -303,9 +288,6 @@
 					"trustSubnetName": {
 						"value": "[parameters('trustedSubnetName')]"
 					},
-					"backendSubnetName": {
-						"value": "[parameters('backendSubnetName')]"
-					},
 					"mgmtSubnetPrefix": {
 						"value": "[parameters('mgmtSubnetPrefix')]"
 					},
@@ -314,9 +296,6 @@
 					},
 					"trustSubnetPrefix": {
 						"value": "[parameters('trustedSubnetPrefix')]"
-					},
-					"backendSubnetPrefix": {
-						"value": "[parameters('backendSubnetPrefix')]"
 					}
 				}
 			}
