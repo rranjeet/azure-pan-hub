@@ -276,7 +276,7 @@
 			"name": "[concat(parameters('virtualMachineName'), copyindex(), '-nic1')]",
 			"type": "Microsoft.Network/networkInterfaces",
 			"dependsOn": [
-				"[if(equals(parameters('loadBalancerSku'), 'Standard'), concat('Microsoft.Network/publicIPAddresses/', parameters('outboundSubnetName'), '-pip-', copyindex()), json('null'))]"
+				"[if(equals(parameters('loadBalancerSku'), 'Standard'), concat('Microsoft.Network/publicIPAddresses/', parameters('outboundSubnetName'), '-pip-', copyindex()), '')]"
 			],
 			"location": "[parameters('location')]",
 			"apiVersion": "2015-06-15",
@@ -292,7 +292,7 @@
 						"properties": {
 							"privateIPAllocationMethod": "Dynamic",
 							"publicIPAddress": {
-								"id": "[if(equals(parameters('loadBalancerSku'), 'Standard'), resourceId('Microsoft.Network/publicIPAddresses/', concat(parameters('outboundSubnetName'), '-pip-', copyindex())), json('null'))]"
+								"id": "[if(equals(parameters('loadBalancerSku'), 'Standard'), resourceId('Microsoft.Network/publicIPAddresses/', concat(parameters('outboundSubnetName'), '-pip-', copyindex())), '')]"
 							},
 							"subnet": {
 								"id": "[concat(variables('vnetId'),'/subnets/', parameters ('outboundSubnetName'))]"
