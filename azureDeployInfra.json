@@ -30,7 +30,7 @@
 
 		"networkSecurityGroupName": {
 			"type": "string",
-			"defaultValue": "mgmt-nsg",
+			"defaultValue": "nsg",
 			"metadata": {
 				"description": "Network Security Group Name"
 			}

@@ -77,7 +77,7 @@
 				"properties": {
 					"addressPrefix": "[parameters('mgmtSubnetPrefix')]",
 					"networkSecurityGroup": {
-						"id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+						"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('nsgName'), '-mgmt'))]"
 					}
 				}
 			},
@@ -90,7 +90,10 @@
 			{
 				"name": "[parameters('trustSubnetName')]",
 				"properties": {
-					"addressPrefix": "[parameters('trustSubnetPrefix')]"
+					"addressPrefix": "[parameters('trustSubnetPrefix')]",
+					"networkSecurityGroup": {
+						"id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(parameters('nsgName'), '-trust'))]"
+					}
 				}
 			}
 		]
