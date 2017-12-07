@@ -288,9 +288,6 @@
 						"name": "ipconfig-untrust",
 						"properties": {
 							"privateIPAllocationMethod": "Dynamic",
-							"publicIPAddress": {
-								"id": "[if(equals(parameters('loadBalancerSku'), 'Standard'), resourceId('Microsoft.Network/publicIPAddresses/', concat(parameters('outboundSubnetName'), '-pip-', copyindex())), json('[]'))]"
-							},
 							"subnet": {
 								"id": "[concat(variables('vnetId'),'/subnets/', parameters ('outboundSubnetName'))]"
 							}
