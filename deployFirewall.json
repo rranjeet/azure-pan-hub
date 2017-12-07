@@ -214,7 +214,7 @@
 				"count": "[parameters('vmCount')]"
 			},
 			"properties": {
-				"publicIPAllocationMethod": "[if equals(parameters('loadBalancerSku'), 'Standard'), 'Static', 'Dynamic']",
+				"publicIPAllocationMethod": "[if(equals(parameters('loadBalancerSku'), 'Standard'), 'Static', 'Dynamic')]",
 				"dnsSettings": {
 					"domainNameLabel":  "[concat(parameters('mgmtPublicIPDns'), copyindex())]"
 				}
@@ -266,7 +266,7 @@
 				"count": "[parameters('vmCount')]"
 			},
 			"properties": {
-				"publicIPAllocationMethod": "[if equals(parameters('loadBalancerSku'), 'Standard'), 'Static', 'Dynamic']"
+				"publicIPAllocationMethod": "[if(equals(parameters('loadBalancerSku'), 'Standard'), 'Static', 'Dynamic')]"
 			}
 		},
 
