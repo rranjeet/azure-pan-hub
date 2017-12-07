@@ -289,7 +289,7 @@
 		// Setup Untrusted (external) Network Interface for Std LB
 		{
 			"condition": "[equals(parameters('loadBalancerSku'), 'Standard')]", 
-			"name": "[concat(parameters('virtualMachineName'), copyindex(), '-nic1')]",
+			"name": "[concat(parameters('virtualMachineName'), copyindex(), '-nic1-std')]",
 			"type": "Microsoft.Network/networkInterfaces",
 			"dependsOn": [
 				"[concat('Microsoft.Network/publicIPAddresses/', parameters('outboundSubnetName'), '-pip-', copyindex())]"
@@ -319,11 +319,10 @@
 			}
 		},
 
-
 		// Setup Untrusted (external) Network Interface for Basic LB
 		{
 			"condition": "[equals(parameters('loadBalancerSku'), 'Basic')]", 
-			"name": "[concat(parameters('virtualMachineName'), copyindex(), '-nic1')]",
+			"name": "[concat(parameters('virtualMachineName'), copyindex(), '-nic1-basic')]",
 			"type": "Microsoft.Network/networkInterfaces",
 			"location": "[parameters('location')]",
 			"apiVersion": "2015-06-15",
@@ -381,14 +380,14 @@
 		// VMSeries-Firewall-VM with Basic Load Balancer
 		{
 			"condition": "[equals(parameters('loadBalancerSku'), 'Basic')]", 
-			"name": "[concat(parameters('virtualMachineName'), copyindex())]",
+			"name": "[concat(parameters('virtualMachineName'), '-basic-', copyindex())]",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2015-01-01",
 			"dependsOn": [
 				"[concat('Microsoft.Compute/availabilitySets/', parameters('avSetName'))]",
 				"[concat('Microsoft.Network/publicIPAddresses/', parameters('mgmtPublicIPName'), copyindex())]",
 				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic0')]",
-				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic1')]",
+				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic1-basic')]",
 				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic2')]"
 			],
 			"copy": {
@@ -453,13 +452,13 @@
 		// VMSeries-Firewall-VM with Standard Load Balancer
 		{
 			"condition": "[equals(parameters('loadBalancerSku'), 'Standard')]", 
-			"name": "[concat(parameters('virtualMachineName'), copyindex())]",
+			"name": "[concat(parameters('virtualMachineName'), '-std-', copyindex())]",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2015-01-01",
 			"dependsOn": [
 				"[concat('Microsoft.Network/publicIPAddresses/', parameters('mgmtPublicIPName'), copyindex())]",
 				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic0')]",
-				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic1')]",
+				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic1-std')]",
 				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic2')]"
 			],
 			"copy": {
