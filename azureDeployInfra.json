@@ -2,6 +2,17 @@
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
+		"hubLoadBalancerSku": {
+			"type": "string",
+			"allowedValues": [
+				"Standard",
+				"Basic"
+			],
+			"metadata": {
+				"description": "Std LB load balances across all the ports where as Basic LB load balances on a port-to-port basis"
+			},
+			"defaultValue": "Standard"
+		},
 		"storageName": {
 			"type": "string",
 			"metadata": {
@@ -314,6 +325,9 @@
 					"contentVersion": "1.0.0.0"
 				},
 				"parameters": {
+					"loadBalancerSku": {
+						"value": "[variables('hubLoadBalancerSku')]"
+					},
 					"location": {
 						"value": "[variables('location')]"
 					},
@@ -351,6 +365,9 @@
 					"contentVersion": "1.0.0.0"
 				},
 				"parameters": {
+					"loadBalancerSku": {
+						"value": "[variables('hubLoadBalancerSku')]"
+					},
 					"baseUrl": {
 						"value": "[variables('baseUrl')]"
 					},

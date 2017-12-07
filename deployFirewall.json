@@ -2,7 +2,17 @@
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
-
+		"loadBalancerSku": {
+			"type": "string",
+			"allowedValues": [
+				"Standard",
+				"Basic"
+			],
+			"metadata": {
+				"description": "Standard or Basic"
+			},
+			"defaultValue": "Standard"
+		},
 		"storageName": {
 			"type": "string",
 			"metadata": {
@@ -196,7 +206,7 @@
 			"type": "Microsoft.Network/publicIPAddresses",
 			"name": "[concat(parameters('mgmtPublicIPName'), copyindex())]",
 			"sku": {
-				"name": "Standard"
+				"name": "[parameters('loadBalancerSku')]"
 			},
 			"location": "[parameters('location')]",
 			"copy": {
@@ -204,7 +214,7 @@
 				"count": "[parameters('vmCount')]"
 			},
 			"properties": {
-				"publicIPAllocationMethod": "Static",
+				"publicIPAllocationMethod": "[if equals(parameters('loadBalancerSku'), 'Standard'), 'Static', 'Dynamic']",
 				"dnsSettings": {
 					"domainNameLabel":  "[concat(parameters('mgmtPublicIPDns'), copyindex())]"
 				}
@@ -242,12 +252,13 @@
 			}
 		},
 		// Setup Untrust PublicIPs[x]
-		{ 
+		{
+			"condition": "[equals(parameters('loadBalancerSku'), 'Standard')]", 
 			"apiVersion": "2017-08-01",
 			"type": "Microsoft.Network/publicIPAddresses",
 			"name": "[concat(parameters('outboundSubnetName'), '-pip-', copyindex())]",
 			"sku": {
-				"name": "Standard"
+				"name": "[parameters('loadBalancerSku')]"
 			},
 			"location": "[parameters('location')]",
 			"copy": {
@@ -255,7 +266,7 @@
 				"count": "[parameters('vmCount')]"
 			},
 			"properties": {
-				"publicIPAllocationMethod": "Static"
+				"publicIPAllocationMethod": "[if equals(parameters('loadBalancerSku'), 'Standard'), 'Static', 'Dynamic']"
 			}
 		},
 
@@ -265,8 +276,7 @@
 			"name": "[concat(parameters('virtualMachineName'), copyindex(), '-nic1')]",
 			"type": "Microsoft.Network/networkInterfaces",
 			"dependsOn": [
-				"[concat('Microsoft.Network/publicIPAddresses/', parameters('outboundSubnetName'), '-pip-', copyindex())]"
-
+				"[if(equals(parameters('loadBalancerSku'), 'Standard'), concat('Microsoft.Network/publicIPAddresses/', parameters('outboundSubnetName'), '-pip-', copyindex()), json('null'))]"
 			],
 			"location": "[parameters('location')]",
 			"apiVersion": "2015-06-15",
@@ -282,7 +292,7 @@
 						"properties": {
 							"privateIPAllocationMethod": "Dynamic",
 							"publicIPAddress": {
-								"id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('outboundSubnetName'), '-pip-', copyindex()))]"
+								"id": "[if(equals(parameters('loadBalancerSku'), 'Standard'), resourceId('Microsoft.Network/publicIPAddresses/', concat(parameters('outboundSubnetName'), '-pip-', copyindex())), json('null'))]"
 							},
 							"subnet": {
 								"id": "[concat(variables('vnetId'),'/subnets/', parameters ('outboundSubnetName'))]"

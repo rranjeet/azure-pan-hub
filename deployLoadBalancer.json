@@ -2,6 +2,17 @@
 	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
 	"contentVersion": "1.0.0.0",
 	"parameters": {
+		"loadBalancerSku": {
+			"type": "string",
+			"allowedValues": [
+				"Standard",
+				"Basic"
+			],
+			"metadata": {
+				"description": "Standard or Basic"
+			},
+			"defaultValue": "Standard"
+		},
 		"location": {
 			"type": "string",
 			"metadata": {
@@ -55,7 +66,7 @@
 			"location": "[parameters('location')]",
             "sku":
             {
-                "name": "Standard"
+                "name": "[parameters('loadBalancerSku')]"
             },
 			"properties": {
 				"frontendIPConfigurations": [
@@ -88,8 +99,8 @@
 								"id": "[concat(variables('lbId'), '/probes/lbprobe')]"
 							},
 							"protocol": "All",
-							"frontendPort": 0,
-							"backendPort": 0,
+							"frontendPort": "[if(equals(parameters('loadBalancerSku'), 'Standard'), 0, 80]",
+							"backendPort": "[if(equals(parameters('loadBalancerSku'), 'Standard'), 0, 80]",
 							"enableFloatingIP": false,
 							"idleTimeoutInMinutes": 4,
 							"loadDistribution": "SourceIPProtocol"
@@ -110,8 +121,6 @@
 				]
 			}
 		}
-
-
 	],
 	"outputs" : {
 		"LoadBalancerFrontEndIp": {
