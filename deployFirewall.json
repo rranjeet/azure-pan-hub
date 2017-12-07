@@ -276,7 +276,7 @@
 			"name": "[concat(parameters('virtualMachineName'), copyindex(), '-nic1')]",
 			"type": "Microsoft.Network/networkInterfaces",
 			"dependsOn": [
-				"[if(equals(parameters('loadBalancerSku'), 'Standard'), concat('Microsoft.Network/publicIPAddresses/', parameters('outboundSubnetName'), '-pip-', copyindex()), json(['']))]"
+				"[if(equals(parameters('loadBalancerSku'), 'Standard'), concat('Microsoft.Network/publicIPAddresses/', parameters('outboundSubnetName'), '-pip-', copyindex()), json('null'))]"
 			],
 			"location": "[parameters('location')]",
 			"apiVersion": "2015-06-15",
