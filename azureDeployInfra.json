@@ -326,7 +326,7 @@
 				},
 				"parameters": {
 					"loadBalancerSku": {
-						"value": "[variables('hubLoadBalancerSku')]"
+						"value": "[parameters('hubLoadBalancerSku')]"
 					},
 					"location": {
 						"value": "[variables('location')]"
@@ -366,7 +366,7 @@
 				},
 				"parameters": {
 					"loadBalancerSku": {
-						"value": "[variables('hubLoadBalancerSku')]"
+						"value": "[parameters('hubLoadBalancerSku')]"
 					},
 					"baseUrl": {
 						"value": "[variables('baseUrl')]"
