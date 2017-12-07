@@ -98,7 +98,7 @@
 							"probe": {
 								"id": "[concat(variables('lbId'), '/probes/lbprobe')]"
 							},
-							"protocol": "All",
+							"protocol": "[if(equals(parameters('loadBalancerSku'), 'Standard'), 'All', 'Tcp')]",
 							"frontendPort": "[if(equals(parameters('loadBalancerSku'), 'Standard'), 0, 80)]",
 							"backendPort": "[if(equals(parameters('loadBalancerSku'), 'Standard'), 0, 80)]",
 							"enableFloatingIP": false,
