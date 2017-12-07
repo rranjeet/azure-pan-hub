@@ -200,6 +200,15 @@
 	},
 
 	"resources": [
+		// availabilitySets
+		{ 
+			"condition": "[equals(parameters('loadBalancerSku'), 'Standard')]", 
+			"apiVersion": "2015-05-01-preview",
+			"type": "Microsoft.Compute/availabilitySets",
+			"name": "[parameters('avSetName')]",
+			"location": "[parameters('location')]"
+		},
+
 		// Setup Mgmt PublicIPs[x]
 		{ 
 			"apiVersion": "2017-08-01",
@@ -270,9 +279,43 @@
 			}
 		},
 
-
-		// Setup Untrusted (external) Network Interface
+		// Setup Untrusted (external) Network Interface for Std LB
 		{
+			"condition": "[equals(parameters('loadBalancerSku'), 'Standard')]", 
+			"name": "[concat(parameters('virtualMachineName'), copyindex(), '-nic1')]",
+			"type": "Microsoft.Network/networkInterfaces",
+			"dependsOn": [
+				"[concat('Microsoft.Network/publicIPAddresses/', parameters('outboundSubnetName'), '-pip-', copyindex())]"
+			],
+			"location": "[parameters('location')]",
+			"apiVersion": "2015-06-15",
+			"copy": {
+				"name": "nicLoop",
+				"count": "[parameters('vmCount')]"
+			},			
+			"properties": {
+				"enableIPForwarding": true,
+				"ipConfigurations": [
+					{
+						"name": "ipconfig-untrust",
+						"properties": {
+							"privateIPAllocationMethod": "Dynamic",
+							"publicIPAddress": {
+								"id": "[resourceId('Microsoft.Network/publicIPAddresses/', concat(parameters('outboundSubnetName'), '-pip-', copyindex()))]"
+							},
+							"subnet": {
+								"id": "[concat(variables('vnetId'),'/subnets/', parameters ('outboundSubnetName'))]"
+							}
+						}
+					}
+				]
+			}
+		},
+
+
+		// Setup Untrusted (external) Network Interface for Basic LB
+		{
+			"condition": "[equals(parameters('loadBalancerSku'), 'Basic')]", 
 			"name": "[concat(parameters('virtualMachineName'), copyindex(), '-nic1')]",
 			"type": "Microsoft.Network/networkInterfaces",
 			"location": "[parameters('location')]",
@@ -328,8 +371,78 @@
 			}
 		},
 
-		// VMSeries-Firewall-VM
+		// VMSeries-Firewall-VM with Basic Load Balancer
 		{
+			"condition": "[equals(parameters('loadBalancerSku'), 'Basic')]", 
+			"name": "[concat(parameters('virtualMachineName'), copyindex())]",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2015-01-01",
+			"dependsOn": [
+				"[concat('Microsoft.Compute/availabilitySets/', parameters('avSetName'))]",
+				"[concat('Microsoft.Network/publicIPAddresses/', parameters('mgmtPublicIPName'), copyindex())]",
+				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic0')]",
+				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic1')]",
+				"[concat('Microsoft.Network/networkInterfaces/', parameters('virtualMachineName'), copyindex(), '-nic2')]"
+			],
+			"copy": {
+				"name": "vmLoop",
+				"count": "[parameters('vmCount')]"
+			},
+			"properties": {
+				"mode": "Incremental",
+				"templateLink": {
+					"uri": "[variables('deployVmURL')]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"location": {
+						"value": "[parameters('location')]"
+					},
+					"avSetName": {
+						"value": "[parameters('avSetName')]"
+					},
+					"virtualMachineName": {
+						"value": "[concat(parameters('virtualMachineName'), copyindex())]"
+					},
+					"imageSku": {
+						"value": "[parameters('imageSku')]"
+					},
+					"imageOffer": {
+						"value": "[variables('imageOffer')]"
+					},
+					"imagePublisher": {
+						"value": "[variables('imagePublisher')]"
+					},
+					"nicName": {
+						"value": "[concat(parameters('virtualMachineName'), copyindex())]"
+					},
+					"vmSize": {
+						"value": "[parameters('vmSize')]"
+					},
+					"adminUsername": {
+						"value": "[parameters('adminUsername')]"
+					},
+					"adminPassword": {
+						"value": "[parameters('adminPassword')]"
+					},
+					"storageName": {
+						"value": "[parameters('storageName')]"
+					},
+					"sshKey": {
+						"value": "[parameters('sshKey')]"
+					},
+					"bootstrapUri": {
+						"value": "[parameters('BootstrapUri')]"
+					},
+					"bootstrapUriSizeGB": {
+						"value": "[parameters('BootstrapUriSizeGB')]"
+					}
+				}
+			}
+		},
+		// VMSeries-Firewall-VM with Standard Load Balancer
+		{
+			"condition": "[equals(parameters('loadBalancerSku'), 'Standard')]", 
 			"name": "[concat(parameters('virtualMachineName'), copyindex())]",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2015-01-01",
