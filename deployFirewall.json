@@ -395,6 +395,9 @@
 					"contentVersion": "1.0.0.0"
 				},
 				"parameters": {
+					"loadBalancerSku": {
+						"value": "[parameters('loadBalancerSku')]"
+					},
 					"location": {
 						"value": "[parameters('location')]"
 					},
@@ -463,6 +466,9 @@
 					"contentVersion": "1.0.0.0"
 				},
 				"parameters": {
+					"loadBalancerSku": {
+						"value": "[parameters('loadBalancerSku')]"
+					},
 					"location": {
 						"value": "[parameters('location')]"
 					},
